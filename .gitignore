@@ -8,6 +8,7 @@ __pycache__/
 
 # Folders
 Augmented_Images/
+saved_models/
 Fold1/
 Original_Images/
 Monkeypox_Dataset_metadata.csv
