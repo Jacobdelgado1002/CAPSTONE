@@ -11,6 +11,7 @@ Augmented_Images/
 saved_models/
 Fold1/
 Original_Images/
+model_checkpoints/
 Monkeypox_Dataset_metadata.csv
 
 
