@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // upload 
     document.getElementById('uploadButton').addEventListener('click', function() {
-        window.location.href = '/upload';
+        document.getElementById('imageUploadForm').submit();
     });
 
 });

@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='landing.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/landing.css')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='script/image-upload.js')}}"></script>
     <title>Capstone Web</title>
   </head>
   <body>
@@ -13,16 +14,22 @@
     <!-- Paragraph positioned between header and upload container -->
     <p class="description">Choose an image from your library so that our application can detect if it's Monkeypox.</p>
 
+
+    <!-- Form -->
+    <form id="imageUploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display:none;">
+      <input type="file" id="imageUpload" name="file" accept="image/*">
+    </form>
+    
+
     <!-- Image upload container in the middle of the screen -->
     <div class="upload-container" onclick="document.getElementById('imageUpload').click();">
         <div class="icon">⬆️</div>
         <div class="upload-text" id="uploadText">Choose an image (.jpeg, .png)</div>
-        <!-- Image upload input -->
-        <input type="file" id="imageUpload" accept="image/*">
     </div>
 
+
     <!-- Upload button -->
-    <button class="upload-button" id="uploadButton" disabled>Upload</button>
+    <button class="upload-button" type="submit" id="uploadButton" disabled>Upload</button>
 
 
   </body>
