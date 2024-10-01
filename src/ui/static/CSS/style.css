@@ -59,7 +59,7 @@ body {
 }
 
 /* Upload button */
-.upload-button {
+.button {
     background-color: #e57373;
     color: white;
     border: none;
@@ -72,7 +72,7 @@ body {
     max-width: 350px; /* Keep it the same width as the container */
 }
 
-.upload-button:disabled {
+.button:disabled {
     background-color: #ddd;
     cursor: not-allowed;
 }
