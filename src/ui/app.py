@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 from flask import Flask, request, redirect, url_for, render_template
 import tensorflow as tf
+from tensorflow.keras import layers
 
 app = Flask(__name__)
 
@@ -32,14 +33,16 @@ def upload_failed():
 @app.route('/upload', methods=['POST'])
 def upload():
     wrongFile = False
+
     try: 
         # some error handling
         if 'file' not in request.files:
             wrongFile = True
+
         file = request.files['file']
         
         if file.filename == '':
-            return "No selected file"
+            wrongFile = True
         
         if file:
             # Convert file to image
@@ -49,7 +52,12 @@ def upload():
 
             img_to_tensor = tf.convert_to_tensor(img)
 
+            # Normalization
+            normalization_layer = layers.Rescaling(1./255) 
+            img_to_tensor = normalization_layer(img_to_tensor)  
+
             # Run prediction
+            # Currently, it fails to predict correctly actual images (i.e. an image of my arm with a lunar yeilds 94% monkeypox)
             output = model.predict(img_to_tensor)
 
             # Monkeypox = 0 and Other = 1
@@ -64,12 +72,12 @@ def upload():
             percentage_value = round(probability * 100, 2)
 
             # Redirect to success page if model was able to process it correctly
-            # return redirect(url_for('upload_success'))
             return redirect(url_for('upload_success', result=class_, probability=percentage_value))
     except:
         if(wrongFile): 
             print('Wrong file, maybe add as a notification and send back to landing')
-            return redirect(url_for('/'))
+            return redirect(url_for('landing'))
+        
         return redirect(url_for('upload_failed'))
 
 if __name__ == "__main__":
