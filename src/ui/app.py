@@ -1,4 +1,5 @@
 import numpy as np
+from PIL import Image
 from flask import Flask, request, redirect, url_for, render_template
 import tensorflow as tf
 
@@ -6,7 +7,6 @@ app = Flask(__name__)
 
 # load model
 model = tf.keras.models.load_model("../../best_model/mobilenetv2_best_f1score_fold_1.h5")
-
 
 @app.route('/')
 def landing():
@@ -29,9 +29,19 @@ def upload():
         return "No selected file"
     
     if file:
-        # pass the image to the model
-        # file.save(f"./uploads/{file.filename}")
-        
+        # Convert file to image
+        img = Image.open(file.stream).resize((224, 224))
+        img = np.reshape(np.array(img), [224, 224, 3])
+        img = img[np.newaxis, ...]
+
+        img_to_tensor = tf.convert_to_tensor(img)
+
+        # Run prediction
+        output = model.predict(img_to_tensor)
+        # output = model.predict_classes(img_to_tensor)
+
+        print(output)
+        print(output[0][0])
         # Redirect to success page if model was able to process it correctly
         return redirect(url_for('upload_success'))
 
