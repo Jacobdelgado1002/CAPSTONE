@@ -45,16 +45,19 @@ def upload():
             wrongFile = True
         
         if file:
-            # Convert file to image
-            img = Image.open(file.stream).resize((224, 224))
-            img = np.reshape(np.array(img), [224, 224, 3])
-            img = img[np.newaxis, ...]
+            # Convert file to image and preprocess it
+            img = Image.open(file.stream).convert("RGB").resize((224, 224))
+            img = np.array(img)
+            img = img / 255.0  # Normalize pixel values  
+
+            # Add batch dimension (1, 224, 224, 3)
+            img = np.expand_dims(img, axis=0)
 
             img_to_tensor = tf.convert_to_tensor(img)
 
             # Normalization
-            normalization_layer = layers.Rescaling(1./255) 
-            img_to_tensor = normalization_layer(img_to_tensor)  
+            # normalization_layer = layers.Rescaling(1./255) 
+            # img_to_tensor = normalization_layer(img_to_tensor)  
 
             # Run prediction
             # Currently, it fails to predict correctly actual images (i.e. an image of my arm with a lunar yeilds 94% monkeypox)
