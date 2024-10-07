@@ -7,7 +7,7 @@ from tensorflow.keras import layers
 app = Flask(__name__)
 
 # load model
-model = tf.keras.models.load_model("../../best_model/mobilenetv2_best_f1score_fold_1.h5")
+model = tf.keras.models.load_model("../../best_model/mobilenetv2_best_f1score_fold_2.h5")
 
 # Establish Labels
 classified_as = ['Monkeypox', 'Not Monkeypox']
@@ -45,6 +45,8 @@ def upload():
             wrongFile = True
         
         if file:
+            print("Resizing image...")
+
             # Convert file to image and preprocess it
             img = Image.open(file.stream).convert("RGB").resize((224, 224))
             img = np.array(img)
@@ -53,24 +55,25 @@ def upload():
             # Add batch dimension (1, 224, 224, 3)
             img = np.expand_dims(img, axis=0)
 
+            print("Converting image to tensor...")
             img_to_tensor = tf.convert_to_tensor(img)
 
             # Normalization
             # normalization_layer = layers.Rescaling(1./255) 
             # img_to_tensor = normalization_layer(img_to_tensor)  
 
+            print("Running output...")
             # Run prediction
             # Currently, it fails to predict correctly actual images (i.e. an image of my arm with a lunar yeilds 94% monkeypox)
             output = model.predict(img_to_tensor)
+            print(output)
 
+            print("Setting values...")
             # Monkeypox = 0 and Other = 1
             classes = np.argmax(output, axis = 1)
 
             # Probability for the result
             score = tf.nn.sigmoid(output[0])
-
-            # Yeilds higher % for both classifications
-            score = tf.nn.softmaxx(output[0], axis=-1)
 
             # Classify prediction and score
             class_ = classified_as[classes[0]]
