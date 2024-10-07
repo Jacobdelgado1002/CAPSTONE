@@ -69,6 +69,9 @@ def upload():
             # Probability for the result
             score = tf.nn.sigmoid(output[0])
 
+            # Yeilds higher % for both classifications
+            score = tf.nn.softmaxx(output[0], axis=-1)
+
             # Classify prediction and score
             class_ = classified_as[classes[0]]
             probability = score[classes[0]].numpy()
