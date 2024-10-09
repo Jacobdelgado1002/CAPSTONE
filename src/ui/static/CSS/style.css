@@ -49,6 +49,11 @@ body {
     margin-bottom: 25px; 
 }
 
+.description, h3 {
+    color: black;
+    margin-top: 10px;
+}
+
 /* Styles for the upload container */
 .upload-container {
     display: flex;
@@ -109,6 +114,7 @@ img {
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 8px;
+    object-fit: contain;
 }
 
 /* Image preview styles */
