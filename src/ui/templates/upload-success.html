@@ -12,7 +12,11 @@
     <div class="header">Is This Monkeypox?</div>
 
     <!-- Paragraph positioned between header and upload container -->
-    <p class="description">The results for the image upload is:</p>
+    <p class="description">The results for the image uploaded is:</p>
+
+    <!-- Display the uploaded image -->
+    <img src="data:image/png;base64,{{ image_data }}" alt="Uploaded Image">
+
     <h3>{{result}} with a {{probability}}% of it being true.</h3>
 
     <!-- Return to main page button -->
