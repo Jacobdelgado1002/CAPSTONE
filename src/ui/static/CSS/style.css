@@ -1,12 +1,26 @@
+/* General styling */
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center content vertically */
+    justify-content: flex-start; /* Align content starting at the top */
     min-height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #fff; /* Match the wireframe background */
+}
+
+/* Container styling */
+.container {
+    width: 100%;
+    max-width: 1024px; /* Default width for large screens */
+    padding: 0 20px;
+    box-sizing: border-box; /* Include padding in width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
 }
 
 /* Header styling */
@@ -27,13 +41,12 @@ body {
 
 /* Paragraph styling */
 .description {
-    font-size: 1.2em; /* Increased font size */
+    font-size: 1.5rem; /* Increased font size */
     color: #666;
     text-align: center;
     padding: 0 15px;
-    margin-top: 20px; /* Will adjust spacing dynamically */
+    margin-top: auto; /* Leave room for the fixed header */
     margin-bottom: 25px; 
-    padding-bottom: 5px; /* Adjust the space under the description */
 }
 
 /* Styles for the upload container */
@@ -55,15 +68,19 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for visibility */
 }
 
+/* Hidden file input */
+.upload-container input[type="file"] {
+    display: none;
+}
+
 /* Upload icon styling */
 .upload-container .icon {
     font-size: 3em; /* Larger icon size */
     margin-bottom: 15px; /* Increased space between icon and text */
 }
 
-/* Hidden file input */
-.upload-container input[type="file"] {
-    display: none;
+.upload-container .upload-text {
+    font-size: 1.5rem;
 }
 
 /* Upload button */
@@ -108,40 +125,64 @@ img {
     object-fit: contain; /* Maintain aspect ratio */
 }
 
-/* Responsive styling for mobile screens */
-@media (max-width: 480px) {
-    body {
-        justify-content: center; /* Vertically center the content */
+/* Responsive styling for various screen sizes */
+@media (max-width: 768px) {
+    .container {
+        max-width: 600px;
     }
-
-    .header {
-        font-size: 1.5em; /* Adjust header font for mobile */
-        padding: 10px 0;
-        height: 100px;
-    }
-
-    .description {
-        font-size: 1em; /* Adjust paragraph font size */
-        padding: 0 10px; /* Reduce padding */
-        margin-top: 20px; /* Add spacing */
-    }
-
     .upload-container {
-        padding: 20px; /* Reduce padding */
-        width: 90%; /* Make the upload container larger for mobile */
-        max-width: 90%; /* Increase max-width for mobile */
-        height: 150px; /* Reduce height for mobile */
-        margin-top: 20px; /* Adjust top margin */
+        max-width: 350px;
     }
-
     .upload-container .icon {
-        font-size: 2.5em; /* Adjust the icon size for mobile */
+        font-size: 2rem; 
     }
+    .upload-container .upload-text {
+        font-size: 1.2rem;
+    }
+    .header {
+        font-size: 1.5rem;
+    }
+    .description {
+        font-size: 1rem;
+    }
+}
 
+@media (max-width: 640px) {
+    .container {
+        max-width: 500px;
+    }
+    .upload-container {
+        padding: 20px;
+        height: 150px;
+    }
     .button {
-        font-size: 1.1em; /* Reduce button font size */
-        width: 90%; /* Button width */
-        max-width: 90%; /* Increase max-width for mobile */
-        margin-top: 20px; /* Adjust top margin */
+        font-size: 1.1em;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 475px) {
+    .container {
+        max-width: 90%;
+    }
+    .upload-container {
+        padding: 15px;
+        height: 120px;
+    }
+    .upload-container .icon {
+        font-size: 1.5rem;
+    }
+    .upload-container .upload-text {
+        font-size: 1rem;
+    }
+    .button {
+        font-size: 1em;
+        padding: 8px 16px;
+    }
+    .header {
+        font-size: 1.2rem;
+    }
+    .description {
+        font-size: .8rem;
     }
 }
