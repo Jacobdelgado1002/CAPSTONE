@@ -1,36 +1,35 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css')}}">
     <script type="text/javascript" src="{{ url_for('static', filename='script/image-upload.js')}}"></script>
     <title>Capstone Web</title>
   </head>
   <body>
 
-    <!-- Header at the top of the screen -->
-    <div class="header">Is This Monkeypox?</div>
+    <div class="container">
+      <!-- Header at the top of the screen -->
+      <div class="header">Is This Monkeypox?</div>
 
-    <!-- Paragraph positioned between header and upload container -->
-    <p class="description">Choose an image from your library so that our application can detect if it's Monkeypox.</p>
+      <!-- Paragraph positioned between header and upload container -->
+      <p class="description">Choose an image from your library so that our application can detect if it's Monkeypox.</p>
 
+      <!-- Form -->
+      <form id="imageUploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display:none;">
+        <input type="file" id="imageUpload" name="file" accept="image/*">
+      </form>
 
-    <!-- Form -->
-    <form id="imageUploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display:none;">
-      <input type="file" id="imageUpload" name="file" accept="image/*">
-    </form>
-    
+      <!-- Image upload container in the middle of the screen -->
+      <div class="upload-container" onclick="document.getElementById('imageUpload').click();">
+          <div class="icon">⬆️</div>
+          <div class="upload-text" id="uploadText">Choose an image (.jpeg, .png)</div>
+          <img id="preview" alt="Image Preview" />
+      </div>
 
-    <!-- Image upload container in the middle of the screen -->
-    <div class="upload-container" onclick="document.getElementById('imageUpload').click();">
-        <div class="icon">⬆️</div>
-        <div class="upload-text" id="uploadText">Choose an image (.jpeg, .png)</div>
+      <!-- Upload button -->
+      <button class="button" type="submit" id="uploadButton" disabled>Upload</button>
     </div>
-
-
-    <!-- Upload button -->
-    <button class="button" type="submit" id="uploadButton" disabled>Upload</button>
-
 
   </body>
 </html>
