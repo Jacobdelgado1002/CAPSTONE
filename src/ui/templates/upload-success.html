@@ -18,7 +18,7 @@
 
       <!-- Display the uploaded image -->
       <div class="upload-container">
-        <img src="data:image/png;base64,{{ image_data }}" alt="Uploaded Image">
+        <img src="{{ url_for('static', filename='uploads/uploaded_image.png') }}" alt="Uploaded Image">
       </div>
 
       <h3 class="description">{{result}} with a {{probability}}% of it being true.</h3>

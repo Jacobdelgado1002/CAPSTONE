@@ -28,9 +28,8 @@ def landing():
 def upload_success():
     result = request.args.get('result')  
     probability = request.args.get('probability')
-    image_data = request.args.get('image')
 
-    return render_template('upload-success.html', result = result, probability = probability, image_data = image_data)
+    return render_template('upload-success.html', result = result, probability = probability)
 
 
 @app.route('/upload/failed')
@@ -57,16 +56,12 @@ def upload():
 
             # Convert file to image and preprocess it
             img = Image.open(file.stream).convert("RGB").resize((224, 224))
-            
-            # To render image
-            img_io = io.BytesIO()
-            img.save(img_io, 'PNG')
-            img_io.seek(0)
 
-            # Convert image to base64
-            img_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
-            
+            # Save the image with a fixed name directly
+            img.save('static/uploads/uploaded_image.png')
 
+
+            # Preparing img for model input
             img = np.array(img)
             img = img / 255.0  # Normalize pixel values  
 
@@ -108,7 +103,7 @@ def upload():
                 class_ = classified_as[1]
 
             # Redirect to success page if model was able to process it correctly
-            return redirect(url_for('upload_success', result=class_, probability=percentage_value, image=img_base64))
+            return redirect(url_for('upload_success', result=class_, probability=percentage_value))
     except:
         if(wrongFile): 
             print('Wrong file, maybe add as a notification and send back to landing')
