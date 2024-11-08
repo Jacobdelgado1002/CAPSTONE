@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 # Load the SavedModel using TFSMLayer, treating it as a Keras layer
 model_layer = tf.keras.layers.TFSMLayer('../../best_model/model1/best_f1score_fold', call_endpoint='serving_default')
+print(tf.keras.layers.TFSMLayer())
 
 # Wrap the TFSMLayer in a Sequential model for inference
 model = tf.keras.Sequential([model_layer])
