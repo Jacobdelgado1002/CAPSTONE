@@ -118,8 +118,7 @@ img {
 }
 
 /* Image preview styles */
-#preview {
-    display: none; /* Hide preview initially */
+.preview-img {
     width: 100%; /* Take full width of the container */
     height: auto; /* Maintain aspect ratio */
     max-width: 100%; /* Ensure it doesn't overflow the container */
@@ -161,6 +160,10 @@ img {
     border-color: #0056b3;
   }
 
+.hidden {
+    display: none; /* Hide preview initially */
+}
+
 /* Responsive styling for various screen sizes */
 @media (max-width: 768px) {
     .container {
@@ -168,6 +171,9 @@ img {
     }
     .upload-container {
         max-width: 350px;
+    }
+    .preview-img {
+        max-width: 60%;
     }
     .upload-container .icon {
         font-size: 2rem; 
@@ -205,6 +211,10 @@ img {
         padding: 15px;
         height: 120px;
     }
+    .preview-img {
+        max-width: 60%;
+        max-height: 110px;
+    }
     .upload-container .icon {
         font-size: 1.5rem;
     }
@@ -217,8 +227,5 @@ img {
     }
     .header {
         font-size: 1.2rem;
-    }
-    .description {
-        font-size: .8rem;
     }
 }
