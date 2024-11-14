@@ -1,19 +1,10 @@
 import numpy as np
-import io
-import base64
 from PIL import Image
 from flask import Flask, request, redirect, url_for, render_template
 import tensorflow as tf
 
 app = Flask(__name__)
 
-
-# Load the SavedModel using TFSMLayer, treating it as a Keras layer
-# model_layer = tf.keras.layers.TFSMLayer('../../best_model/model1/best_f1score_fold', call_endpoint='serving_default')
-# model_layer = tf.keras.layers.TFSMLayer('../../tensorRT_model/test', call_endpoint='serving_default')
-
-# Wrap the TFSMLayer in a Sequential model for inference
-# model = tf.keras.Sequential([model_layer])
 
 # Load Models
 models = {
@@ -85,7 +76,6 @@ def upload():
             # Save the image with a fixed name directly
             img.save('static/uploads/uploaded_image.png')
 
-
             # Preparing img for model input
             img = np.array(img)
             img = img / 255.0  # Normalize pixel values  
@@ -96,25 +86,14 @@ def upload():
             print("\nConverting image to tensor...\n")
             img_to_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
 
-            # output = model.signatures["serving_default"](img_to_tensor)
-            print(f"\nRunning output...\n")
             # Run prediction
+            print(f"\nRunning output...\n")
             infer = model.signatures["serving_default"]
             output = infer(img_to_tensor)
-
-            # for key, value in output.items():
-            #     output = value.item()
 
             print("\nSetting values...\n")
 
             prediction_logits = output["output_0"].numpy()
-
-            # Monkeypox = 0 and Other = 1
-            # classes = np.argmax(output, axis = 1)
-            # print(f'Classes: {classes}')
-
-            # Probability for the result
-            # score = tf.nn.sigmoid(output)
             score = tf.nn.sigmoid(prediction_logits)
 
             # Only returns the chance of it NOT being monkeypox
