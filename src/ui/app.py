@@ -15,7 +15,7 @@ app = Flask(__name__)
 # Wrap the TFSMLayer in a Sequential model for inference
 # model = tf.keras.Sequential([model_layer])
 
-#Find how to have them warmed up, the optimized ones take a while to give prediction
+# Load Models
 models = {
     "Original": tf.saved_model.load('../../best_model/model1/best_f1score_fold'),
     "FP32": tf.saved_model.load('../../tensorRT_model/fp32'),
@@ -23,11 +23,21 @@ models = {
     "INT8": tf.saved_model.load('../../tensorRT_model/int8')
 }
 
-
-
+# Warm up models:
+img = Image.open('static/uploads/uploaded_image.png').convert("RGB").resize((224, 224))
+img = np.array(img)
+img = img / 255.0  # Normalize pixel values  
+img = np.expand_dims(img, axis=0)
+img_to_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
+for key in models:
+    model = models.get(key)
+    print(model)
+    infer = model.signatures["serving_default"]
+    infer(img_to_tensor)
 
 # Establish Labels
 classified_as = ['Monkeypox', 'Not Monkeypox']
+
 
 
 @app.route('/')
@@ -52,9 +62,8 @@ def upload_failed():
 @app.route('/upload', methods=['POST'])
 def upload():
     wrongFile = False
-    selected_model_key = request.form.get('model', 'Original')  # Default to 'Original' if not provided
 
-    # Check if the selected model exists in the dictionary
+    selected_model_key = request.form.get('model', 'Original')  # Default to 'Original' if not provided
     model = models.get(selected_model_key)
 
     try: 
