@@ -10,11 +10,18 @@ app = Flask(__name__)
 
 # Load the SavedModel using TFSMLayer, treating it as a Keras layer
 # model_layer = tf.keras.layers.TFSMLayer('../../best_model/model1/best_f1score_fold', call_endpoint='serving_default')
-model_layer = tf.keras.layers.TFSMLayer('../../tensorRT_model/test', call_endpoint='serving_default')
-
+# model_layer = tf.keras.layers.TFSMLayer('../../tensorRT_model/test', call_endpoint='serving_default')
 
 # Wrap the TFSMLayer in a Sequential model for inference
-model = tf.keras.Sequential([model_layer])
+# model = tf.keras.Sequential([model_layer])
+
+#Find how to have them warmed up, the optimized ones take a while to give prediction
+
+# model = tf.saved_model.load('../../best_model/model1/best_f1score_fold') 
+# model = tf.saved_model.load('../../tensorRT_model/fp32')
+model = tf.saved_model.load('../../tensorRT_model/fp16')
+# model = tf.saved_model.load('../../tensorRT_model/int8')
+
 
 # Establish Labels
 classified_as = ['Monkeypox', 'Not Monkeypox']
@@ -53,7 +60,7 @@ def upload():
             wrongFile = True
         
         if file:
-            print("Resizing image...")
+            print("\nResizing image...\n")
 
             # Convert file to image and preprocess it
             img = Image.open(file.stream).convert("RGB").resize((224, 224))
@@ -69,32 +76,38 @@ def upload():
             # Add batch dimension (1, 224, 224, 3)
             img = np.expand_dims(img, axis=0)
 
-            print("Converting image to tensor...")
-            img_to_tensor = tf.convert_to_tensor(img)
+            print("\nConverting image to tensor...\n")
+            img_to_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
 
-            print("Running output...")
+            # output = model.signatures["serving_default"](img_to_tensor)
+            print(f"\nRunning output...\n")
             # Run prediction
-            output = model.predict(img_to_tensor)
+            infer = model.signatures["serving_default"]
+            output = infer(img_to_tensor)
 
-            for key, value in output.items():
-                output = value.item()
+            # for key, value in output.items():
+            #     output = value.item()
 
-            print("Setting values...")
+            print("\nSetting values...\n")
+
+            prediction_logits = output["output_0"].numpy()
 
             # Monkeypox = 0 and Other = 1
             # classes = np.argmax(output, axis = 1)
             # print(f'Classes: {classes}')
 
             # Probability for the result
-            score = tf.nn.sigmoid(output)
+            # score = tf.nn.sigmoid(output)
+            score = tf.nn.sigmoid(prediction_logits)
 
             # Only returns the chance of it NOT being monkeypox
-            print("Score:", score)
+            print("\nScore:", score)
 
             # Classify prediction and score
             probability = score.numpy()
-            percentage_value = round(probability * 100, 2)
-            print(f'Probability: {percentage_value}')
+            percentage_value = round(score.numpy().item() * 100, 2)
+            predicted_classes = (probability > 0.5).astype(int)
+            print(f'\nProbability: {percentage_value}\nPredicted classes {predicted_classes}\n')
             
             # its monkeypox
             if percentage_value < 50:
@@ -105,12 +118,14 @@ def upload():
 
             # Redirect to success page if model was able to process it correctly
             return redirect(url_for('upload_success', result=class_, probability=percentage_value))
-    except:
+    except Exception as e:
         if(wrongFile): 
             print('Wrong file, maybe add as a notification and send back to landing')
             return redirect(url_for('landing'))
         
-        return redirect(url_for('upload_failed')) 
+        print(f"Unexpected error: {e}")
+        return redirect(url_for('upload_failed'))
+        
 
 if __name__ == "__main__":
     app.run(debug=True)
