@@ -16,11 +16,14 @@ app = Flask(__name__)
 # model = tf.keras.Sequential([model_layer])
 
 #Find how to have them warmed up, the optimized ones take a while to give prediction
+models = {
+    "Original": tf.saved_model.load('../../best_model/model1/best_f1score_fold'),
+    "FP32": tf.saved_model.load('../../tensorRT_model/fp32'),
+    "FP16": tf.saved_model.load('../../tensorRT_model/fp16'),
+    "INT8": tf.saved_model.load('../../tensorRT_model/int8')
+}
 
-# model = tf.saved_model.load('../../best_model/model1/best_f1score_fold') 
-# model = tf.saved_model.load('../../tensorRT_model/fp32')
-model = tf.saved_model.load('../../tensorRT_model/fp16')
-# model = tf.saved_model.load('../../tensorRT_model/int8')
+
 
 
 # Establish Labels
@@ -36,8 +39,9 @@ def landing():
 def upload_success():
     result = request.args.get('result')  
     probability = request.args.get('probability')
+    model_used = request.args.get('model')
 
-    return render_template('upload-success.html', result = result, probability = probability)
+    return render_template('upload-success.html', result = result, probability = probability, modelName = model_used)
 
 
 @app.route('/upload/failed')
@@ -48,6 +52,10 @@ def upload_failed():
 @app.route('/upload', methods=['POST'])
 def upload():
     wrongFile = False
+    selected_model_key = request.form.get('model', 'Original')  # Default to 'Original' if not provided
+
+    # Check if the selected model exists in the dictionary
+    model = models.get(selected_model_key)
 
     try: 
         # some error handling
@@ -117,7 +125,8 @@ def upload():
                 class_ = classified_as[1]
 
             # Redirect to success page if model was able to process it correctly
-            return redirect(url_for('upload_success', result=class_, probability=percentage_value))
+            return redirect(url_for('upload_success', result=class_, probability=percentage_value, model=selected_model_key))
+        
     except Exception as e:
         if(wrongFile): 
             print('Wrong file, maybe add as a notification and send back to landing')
