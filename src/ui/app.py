@@ -5,7 +5,8 @@ import tensorflow as tf
 
 app = Flask(__name__)
 
-
+gpu = tf.config.list_physical_devices('GPU')[0]
+tf.config.experimental.set_memory_growth(gpu, True)
 # Load Models
 models = {
     "Original": tf.saved_model.load('../../best_model/model1/best_f1score_fold'),
