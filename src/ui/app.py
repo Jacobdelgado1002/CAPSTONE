@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 gpu = tf.config.list_physical_devices('GPU')[0]
 tf.config.experimental.set_memory_growth(gpu, True)
+
 # Load Models
 models = {
     "Original": tf.saved_model.load('../../best_model/model1/best_f1score_fold'),
@@ -16,7 +17,7 @@ models = {
 }
 
 # Warm up models:
-img = Image.open('static/uploads/uploaded_image.png').convert("RGB").resize((224, 224))
+img = Image.open('static/uploads/uploaded_image.png').convert("RGB").resize((224, 224)) # Used image saved locally as input
 img = np.array(img)
 img = img / 255.0  # Normalize pixel values  
 img = np.expand_dims(img, axis=0)
@@ -31,12 +32,14 @@ for key in models:
 classified_as = ['Monkeypox', 'Not Monkeypox']
 
 
-
+# Landing route of the application
 @app.route('/')
 def landing():
     return render_template('landing.html')
 
 
+# Upload success route of the application
+# Receives result, probability and model as parameters
 @app.route('/upload/success')
 def upload_success():
     result = request.args.get('result')  
@@ -46,11 +49,13 @@ def upload_success():
     return render_template('upload-success.html', result = result, probability = probability, modelName = model_used)
 
 
+# Upload failed route of the application
+# Called when an error occurs within upload to avoid crashing the page
 @app.route('/upload/failed')
 def upload_failed():
     return render_template('upload-failed.html')
 
-
+# Upload route, runs when pressing the upload button from landing page
 @app.route('/upload', methods=['POST'])
 def upload():
     wrongFile = False
@@ -121,6 +126,7 @@ def upload():
             print('Wrong file, maybe add as a notification and send back to landing')
             return redirect(url_for('landing'))
         
+        # Print error to identify easier what the cause was
         print(f"Unexpected error: {e}")
         return redirect(url_for('upload_failed'))
         
