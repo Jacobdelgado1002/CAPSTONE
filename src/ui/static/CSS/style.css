@@ -155,9 +155,9 @@ img {
   }
   
   .model-button.selected {
-    background-color: #007bff;
+    background-color: #e57373;
     color: white;
-    border-color: #0056b3;
+    border: none;
   }
 
 .hidden {
