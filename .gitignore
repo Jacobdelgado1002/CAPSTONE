@@ -8,6 +8,7 @@ data/
 *.so
 
 # Folders
+data/
 Augmented_Images/
 saved_models/
 Fold1/
