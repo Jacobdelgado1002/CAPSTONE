@@ -1,0 +1,8 @@
+              precision    recall  f1-score   support
+
+       Other     0.9138    0.9651    0.9387       659
+        Mpox     0.9363    0.8492    0.8906       398
+
+    accuracy                         0.9215      1057
+   macro avg     0.9250    0.9072    0.9147      1057
+weighted avg     0.9223    0.9215    0.9206      1057
